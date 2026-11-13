@@ -44,8 +44,7 @@ def load_preferences(path):
         data = json.load(f)
     user_books = data.get("user_books", [])
     exclude_tags = set(data.get("exclude_tags", []))
-    tag_ratings = data.get("tag_ratings", {})
-    return user_books, exclude_tags, tag_ratings
+    return user_books, exclude_tags
 
 
 def adjusted_rating(avg, count):
@@ -54,9 +53,7 @@ def adjusted_rating(avg, count):
     return (avg * count + GLOBAL_AVG * K_SMOOTHING) / (count + K_SMOOTHING)
 
 
-
-def build_taste_profile(user_books, books, tag_ratings=None):
-    tag_ratings = tag_ratings or {}
+def build_taste_profile(user_books, books):
     tag_sum = defaultdict(float)
     tag_count = defaultdict(int)
     positive_ratings = []
@@ -78,11 +75,6 @@ def build_taste_profile(user_books, books, tag_ratings=None):
         if positive_ratings else 5.0
     )
 
-    explicit_tags = set(tag_ratings.keys())
-    for tag, weight in tag_ratings.items():
-        tag_sum[tag] = float(weight)
-        tag_count[tag] = 1
-
     profile = {}
     for tag in tag_sum:
         n = tag_count[tag]
@@ -91,10 +83,9 @@ def build_taste_profile(user_books, books, tag_ratings=None):
             profile[tag] = s / n
         else:
             avg = (s + global_avg * K_TAG) / (n + K_TAG)
-            if n == 1 and tag not in explicit_tags:
+            if n == 1:
                 avg *= 0.7
             profile[tag] = avg
-
     return profile, global_avg
 
 
@@ -117,9 +108,9 @@ def compute_score(book, profile, max_tag):
 
 
 def recommend(user_books, books, limit=10, diversity=None,
-              exclude_tags=None, tag_ratings=None):
+              exclude_tags=None):
     exclude_tags = exclude_tags or set()
-    profile, global_avg = build_taste_profile(user_books, books, tag_ratings)
+    profile, global_avg = build_taste_profile(user_books, books)
     if not profile:
         print("! Порожній профіль смаків — немає оцінених книг із відомими тегами.")
         return [], profile

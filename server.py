@@ -35,7 +35,6 @@ class UserBook(BaseModel):
 class RecommendRequest(BaseModel):
     user_books: list[UserBook] = Field(default_factory=list)
     exclude_tags: list[str] = Field(default_factory=list)
-    tag_ratings: dict[str, float] = Field(default_factory=dict)
     limit: int = 10
     diversity: Optional[int] = None
 
@@ -150,7 +149,6 @@ def recommendations(req: RecommendRequest):
         limit=req.limit,
         diversity=req.diversity,
         exclude_tags=set(req.exclude_tags),
-        tag_ratings=req.tag_ratings,
     )
 
     if not candidates:
