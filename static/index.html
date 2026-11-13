@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>проєкт</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Book Recommender</h1>
+
+  <section id="search-section">
+    <h2>Пошук книг</h2>
+    <input id="search-input" placeholder="Назва або автор...">
+    <button id="search-btn">Шукати</button>
+    <div id="search-results"></div>
+  </section>
+
+  <section id="profile-section">
+    <h2>Мій профіль</h2>
+    <div id="profile-list"></div>
+    <label>Виключити теги (через кому):
+      <input id="exclude-tags" placeholder="children, young_adult">
+    </label>
+    <button id="recommend-btn">Отримати рекомендації</button>
+  </section>
+
+  <section id="recs-section">
+    <h2>Рекомендації</h2>
+    <div id="profile-display"></div>
+    <div id="recs-list"></div>
+  </section>
+
+  <script src="/app.js"></script>
+</body>
+</html>
